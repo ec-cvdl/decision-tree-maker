@@ -1,0 +1,5 @@
+Ce dossier est un portail statique.
+
+1. Déposez tout le contenu de ce dossier sur votre hébergement web (le portail doit être servi via http/https, pas ouvert en double-clic).
+2. Pour modifier le contenu après publication : modifiez-le dans l’éditeur, ré-exportez, puis remplacez uniquement le fichier data.json sur l’hébergement.
+3. qrcode.svg pointe vers : https://aide.exemple.org/aide-demo/
