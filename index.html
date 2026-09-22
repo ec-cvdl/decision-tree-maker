@@ -3,105 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portail d'aide</title>
-<meta name="description" content="Portail d'assistance : suivez les étapes pour résoudre votre problème.">
+<title>Éditeur d'arbres de décision</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
-<a class="skip-link" href="#main">Aller au contenu</a>
 
-<header class="site-header">
-  <div class="header-inner">
-    <div class="brand-row">
-      <div class="brand-badge" id="brand-badge" aria-hidden="true"></div>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="brand-badge" id="sidebar-badge"></div>
       <div>
-        <div class="brand-org" id="org-name"></div>
-        <div class="brand-title" id="portal-title"></div>
+        <div class="brand-name" id="sidebar-org">Mon espace</div>
+        <div class="brand-sub">Arbres de décision</div>
       </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Créer</div>
+      <button type="button" class="nav-btn active" data-screen="dash">Tableau de bord</button>
+      <button type="button" class="nav-btn" data-screen="editor">Éditeur d'arbre</button>
+      <button type="button" class="nav-btn" data-screen="media">Médias</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Diffuser</div>
+      <button type="button" class="nav-btn" data-screen="portals">Portails</button>
+      <button type="button" class="nav-btn" data-screen="portalHome">Portail d'accueil</button>
+      <button type="button" class="nav-btn" data-screen="apercu">Aperçu</button>
+      <button type="button" class="nav-btn" data-screen="publish">Publication</button>
+      <button type="button" class="nav-btn" data-screen="settings">Paramètres</button>
+      <button type="button" class="nav-btn" data-screen="stats">Statistiques</button>
+    </div>
+
+    <button type="button" class="tutorial-relaunch" id="btn-tutorial-relaunch">Revoir le tutoriel</button>
+    <div class="sidebar-footer" id="sidebar-footer"></div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ═══ TABLEAU DE BORD ═══ -->
+    <section id="screen-dash" class="screen">
+      <div class="head-row">
+        <div>
+          <h1>Vos arbres de dépannage</h1>
+          <p class="sub">Chaque arbre devient un mini-site que la personne suit seule, une question à la fois.</p>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" id="btn-dash-new-tree">+ Nouvel arbre</button>
+      </div>
+      <div class="stat-row" id="dash-stats"></div>
+      <div class="card-grid" id="dash-trees"></div>
+    </section>
+
+    <!-- ═══ ÉDITEUR ═══ -->
+    <section id="screen-editor" class="screen">
+      <div class="editor-layout">
+        <div class="editor-canvas-wrap">
+          <div class="editor-topbar">
+            <button type="button" class="btn btn-outline" id="btn-editor-back">&larr; Arbres</button>
+            <div class="editor-title-wrap">
+              <select id="editor-tree-select" class="tree-select"></select>
+            </div>
+            <div class="editor-tree-fields">
+              <input type="text" id="editor-tree-title" class="tree-title-input" placeholder="Nom de l'arbre">
+              <input type="text" id="editor-tree-desc" class="tree-desc-input" placeholder="Description courte (carte du tableau de bord / du portail)">
+            </div>
+            <div class="editor-icon-picker" id="editor-icon-picker"></div>
+            <div class="editor-color-picker" id="editor-color-picker"></div>
+            <div class="segmented" id="layout-toggle">
+              <button type="button" data-layout="v" class="active">Vertical</button>
+              <button type="button" data-layout="h">Horizontal</button>
+            </div>
+            <div class="zoom-controls" id="zoom-controls">
+              <button type="button" id="btn-zoom-out" title="Zoom arrière">−</button>
+              <button type="button" id="btn-zoom-reset" title="Réinitialiser le zoom">100%</button>
+              <button type="button" id="btn-zoom-in" title="Zoom avant">+</button>
+            </div>
+            <button type="button" class="btn btn-outline" id="btn-rearrange" title="Recalculer la disposition automatique">Réorganiser</button>
+            <button type="button" class="btn btn-outline" id="btn-editor-newtab">Voir dans un nouvel onglet ↗</button>
+            <button type="button" class="btn btn-outline" id="btn-editor-preview">Aperçu</button>
+          </div>
+          <div class="canvas-scroll" id="canvas-scroll">
+            <p id="canvas-empty" class="empty-hint" style="padding:40px;" hidden></p>
+            <div class="canvas-inner" id="canvas-inner">
+              <svg id="canvas-svg" class="canvas-svg"></svg>
+              <div id="canvas-nodes" class="canvas-nodes"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="node-panel" id="node-panel"></aside>
+      </div>
+    </section>
+
+    <!-- ═══ MÉDIAS ═══ -->
+    <section id="screen-media" class="screen">
+      <h1>Bibliothèque de médias</h1>
+      <p class="sub">Photos d'écran et vidéos réutilisables dans toutes vos étapes.</p>
+      <div class="media-filters" id="media-filters"></div>
+      <div class="card-grid media-grid" id="media-grid"></div>
+      <input type="file" id="media-file-input" accept="image/*" multiple hidden>
+    </section>
+
+    <!-- ═══ PORTAILS ═══ -->
+    <section id="screen-portals" class="screen">
+      <div class="head-row">
+        <div>
+          <h1>Portails thématiques</h1>
+          <p class="sub">Chaque portail est un site à part entière, avec sa propre adresse et sa sélection d'arbres.</p>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" id="btn-portals-new">+ Nouveau portail</button>
+      </div>
+      <div class="card-grid" id="portals-grid"></div>
+      <div class="two-col-wide" id="portal-detail-wrap"></div>
+    </section>
+
+    <!-- ═══ PORTAIL D'ACCUEIL (aperçu) ═══ -->
+    <section id="screen-portalHome" class="screen">
+      <div class="head-row-tight">
+        <div>
+          <h1>Portail d'accueil</h1>
+          <p class="sub">La page d'entrée d'un portail : la personne choisit son problème, puis suit l'arbre.</p>
+        </div>
+        <select id="portalhome-select" class="tree-select"></select>
+        <button type="button" class="btn btn-outline" id="btn-portalhome-newtab">Ouvrir dans un nouvel onglet ↗</button>
+      </div>
+      <div class="browser-mock" id="portalhome-browser">
+        <div class="browser-bar"><span></span><span></span><span></span><div class="browser-url" id="portalhome-url"></div></div>
+        <iframe id="portalhome-frame" class="browser-frame" title="Aperçu du portail"></iframe>
+      </div>
+    </section>
+
+    <!-- ═══ APERÇU (arbre) ═══ -->
+    <section id="screen-apercu" class="screen">
+      <div class="head-row-tight">
+        <div>
+          <h1>Aperçu bénéficiaire</h1>
+          <p class="sub" id="apercu-sub">Ce que verra la personne sur le site publié.</p>
+        </div>
+        <select id="apercu-tree-select" class="tree-select"></select>
+        <div class="segmented" id="apercu-mode-toggle">
+          <button type="button" data-mode="A" class="active">Plein écran</button>
+          <button type="button" data-mode="B">Pas à pas</button>
+        </div>
+        <button type="button" class="btn btn-outline" id="btn-apercu-restart">Recommencer</button>
+        <button type="button" class="btn btn-outline" id="btn-apercu-newtab">Ouvrir dans un nouvel onglet ↗</button>
+      </div>
+      <div class="browser-mock" id="apercu-browser">
+        <div class="browser-bar"><span></span><span></span><span></span><div class="browser-url" id="apercu-url"></div></div>
+        <iframe id="apercu-frame" class="browser-frame" title="Aperçu de l'arbre"></iframe>
+      </div>
+    </section>
+
+    <!-- ═══ PUBLICATION ═══ -->
+    <section id="screen-publish" class="screen">
+      <div class="head-row-tight">
+        <div>
+          <h1>Publier et exporter</h1>
+          <p class="sub">Le portail devient un site HTML/CSS autonome, sans base de données, à déposer sur n'importe quel hébergement.</p>
+        </div>
+        <select id="publish-portal-select" class="tree-select"></select>
+      </div>
+      <div id="publish-body"></div>
+    </section>
+
+    <!-- ═══ PARAMÈTRES ═══ -->
+    <section id="screen-settings" class="screen">
+      <h1>Paramètres et identité</h1>
+      <p class="sub">Ces réglages s'appliquent à tous les sites publiés.</p>
+
+      <div class="panel-card">
+        <div class="panel-title">Sauvegarde</div>
+        <div class="panel-sub">Les données vivent dans ce navigateur (aucun fichier dans le dossier téléchargé). Exportez une sauvegarde pour la garder ou la déplacer vers une autre copie de l'outil.</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary" id="btn-backup-export">Exporter mes données (.json)</button>
+          <button type="button" class="btn btn-outline" id="btn-backup-import">Importer une sauvegarde</button>
+        </div>
+        <input type="file" id="backup-file-input" accept="application/json" hidden>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Arbre d'exemple</div>
+        <div class="panel-sub">Recréez un arbre et un portail de démonstration déjà remplis, pour voir concrètement comment tout s'articule.</div>
+        <button type="button" class="btn btn-outline" id="btn-load-example">Charger l'arbre d'exemple</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Réinitialisation</div>
+        <div class="panel-sub">Efface tout (arbres, portails, médias, réglages) et recharge l'application comme à la toute première ouverture, avec le tutoriel et les données de démonstration.</div>
+        <button type="button" class="btn btn-danger-line" id="btn-full-reset">Réinitialiser complètement</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Identité de la structure</div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="set-org-name">Nom affiché</label>
+            <input id="set-org-name" type="text">
+          </div>
+          <div class="field">
+            <label for="set-org-phone">Téléphone d'assistance</label>
+            <input id="set-org-phone" type="text" placeholder="04 72 00 11 22">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Couleur d'accent</div>
+        <div class="panel-sub">Utilisée pour les boutons et la barre de progression du site public.</div>
+        <div class="swatch-row" id="set-swatches"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Couleur de fond</div>
+        <div class="panel-sub">Teintes chaudes et rassurantes pour l'arrière-plan du site public.</div>
+        <div class="swatch-row" id="set-bg-swatches"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Confort de lecture</div>
+        <div class="panel-sub">Taille du texte par défaut sur le site public.</div>
+        <div class="size-row" id="set-sizes"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Suivi de fréquentation (optionnel)</div>
+        <div class="panel-sub">Collez ici le code d'un outil de mesure respectueux de la vie privée (ex. Plausible, Umami, GoatCounter). Laissez vide pour ne rien mesurer.</div>
+        <textarea id="set-tracking" rows="3" placeholder="&lt;script defer data-domain=&quot;...&quot; src=&quot;...&quot;&gt;&lt;/script&gt;"></textarea>
+      </div>
+    </section>
+
+    <!-- ═══ STATISTIQUES ═══ -->
+    <section id="screen-stats" class="screen">
+      <h1>Statistiques d'usage</h1>
+      <p class="sub">Ce back-office ne collecte rien lui-même : les chiffres ci-dessous décrivent votre contenu, pas la fréquentation réelle.</p>
+      <div class="stat-row" id="stats-content"></div>
+      <div class="panel-card" id="stats-tracking-info"></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<div id="tutorial-overlay" class="tutorial-overlay" hidden>
+  <div class="tutorial-card">
+    <button type="button" class="tutorial-skip" id="btn-tutorial-skip">Passer</button>
+    <div id="tutorial-icon" class="tutorial-icon"></div>
+    <h2 id="tutorial-title" class="tutorial-title"></h2>
+    <p id="tutorial-body" class="tutorial-body"></p>
+    <div class="tutorial-dots" id="tutorial-dots"></div>
+    <div class="tutorial-nav">
+      <button type="button" class="btn btn-outline" id="btn-tutorial-prev">Précédent</button>
+      <button type="button" class="btn btn-primary btn-lg" id="btn-tutorial-next">Suivant</button>
     </div>
   </div>
-</header>
+</div>
 
-<main id="main" class="container">
-
-  <section id="view-home" hidden>
-    <h1 id="portal-tagline" class="tagline"></h1>
-    <p id="portal-intro" class="intro"></p>
-
-    <div class="search-row">
-      <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></span>
-      <label for="search-input" class="visually-hidden">Rechercher un problème</label>
-      <input id="search-input" type="search" placeholder="Chercher un problème…" autocomplete="off">
-    </div>
-
-    <div id="tree-grid" class="card-grid" role="list"></div>
-    <p id="no-results" class="no-results" hidden>Aucun résultat pour cette recherche.</p>
-
-    <div id="contact-banner" class="contact-banner" hidden>
-      <span class="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M21.5 16.9v2.6a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.5-3 19.3 19.3 0 0 1-6-6 19.6 19.6 0 0 1-3-8.6 2 2 0 0 1 2-2.2h2.6a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9.5 10a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.5 1.8z"/></svg></span>
-      <div class="contact-text">
-        <div class="contact-title">Vous ne trouvez pas votre problème&nbsp;?</div>
-        <div class="contact-sub">Un technicien peut vous aider directement.</div>
-      </div>
-      <a id="contact-phone" class="contact-phone" href="#"></a>
-    </div>
-  </section>
-
-  <section id="view-tree" hidden>
-    <a href="#" id="btn-home" class="btn-link">&larr; Retour à l'accueil</a>
-
-    <div id="mode-a" class="mode-a" hidden>
-      <div class="flow-head">
-        <button type="button" id="btn-back-a" class="btn-back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="19" height="19"><path d="M15 18l-6-6 6-6"/></svg>
-          Retour
-        </button>
-        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
-        <div id="step-num" class="step-num"></div>
-      </div>
-      <div class="kind-row" id="kind-row-a">
-        <span id="kind-icon-a" class="kind-icon" aria-hidden="true"></span>
-        <span id="kind-label-a" class="kind-label"></span>
-      </div>
-      <div role="region" aria-live="polite" aria-atomic="true">
-        <h2 id="step-title-a" class="step-title-a" tabindex="-1"></h2>
-        <p id="step-text-a" class="step-text-a"></p>
-        <div id="step-media-a" class="step-media" hidden></div>
-        <blockquote id="step-quote-a" class="step-quote" hidden></blockquote>
-        <div id="step-options-a" class="options options-a"></div>
-        <div id="step-end-a" class="end-actions" hidden></div>
-      </div>
-    </div>
-
-    <div id="mode-b" class="mode-b" hidden>
-      <aside class="trail" id="trail" aria-label="Votre parcours"></aside>
-      <div class="mode-b-main">
-        <div class="kind-pill" id="kind-pill-b">
-          <span id="kind-icon-b" class="kind-icon" aria-hidden="true"></span>
-          <span id="kind-label-b"></span>
-        </div>
-        <div role="region" aria-live="polite" aria-atomic="true">
-          <h2 id="step-title-b" class="step-title-b" tabindex="-1"></h2>
-          <p id="step-text-b" class="step-text-b"></p>
-          <div id="step-media-b" class="step-media" hidden></div>
-          <blockquote id="step-quote-b" class="step-quote" hidden></blockquote>
-          <div id="step-options-b" class="options options-b"></div>
-          <div id="step-end-b" class="end-actions" hidden></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <p id="load-error" class="error" hidden>Impossible de charger le contenu du portail. Vérifiez que le fichier <code>data.json</code> est bien présent et que la page est servie via un serveur web (pas en ouverture directe du fichier).</p>
-</main>
-
-<footer class="site-footer">
-  <p>Portail généré avec l'éditeur d'arbres de décision.</p>
-</footer>
-
-<script src="script.js"></script>
+<script id="export-templates" type="application/json">{"index.html": "<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Portail d'aide</title>\n<meta name=\"description\" content=\"Portail d'assistance : suivez les \u00e9tapes pour r\u00e9soudre votre probl\u00e8me.\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap\" rel=\"stylesheet\">\n<link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n<a class=\"skip-link\" href=\"#main\">Aller au contenu</a>\n\n<header class=\"site-header\">\n  <div class=\"header-inner\">\n    <div class=\"brand-row\">\n      <div class=\"brand-badge\" id=\"brand-badge\" aria-hidden=\"true\"></div>\n      <div>\n        <div class=\"brand-org\" id=\"org-name\"></div>\n        <div class=\"brand-title\" id=\"portal-title\"></div>\n      </div>\n    </div>\n  </div>\n</header>\n\n<main id=\"main\" class=\"container\">\n\n  <section id=\"view-home\" hidden>\n    <h1 id=\"portal-tagline\" class=\"tagline\"></h1>\n    <p id=\"portal-intro\" class=\"intro\"></p>\n\n    <div class=\"search-row\">\n      <span class=\"search-icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"22\" height=\"22\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M16.5 16.5L21 21\"/></svg></span>\n      <label for=\"search-input\" class=\"visually-hidden\">Rechercher un probl\u00e8me</label>\n      <input id=\"search-input\" type=\"search\" placeholder=\"Chercher un probl\u00e8me\u2026\" autocomplete=\"off\">\n    </div>\n\n    <div id=\"tree-grid\" class=\"card-grid\" role=\"list\"></div>\n    <p id=\"no-results\" class=\"no-results\" hidden>Aucun r\u00e9sultat pour cette recherche.</p>\n\n    <div id=\"contact-banner\" class=\"contact-banner\" hidden>\n      <span class=\"contact-icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"28\" height=\"28\"><path d=\"M21.5 16.9v2.6a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.5-3 19.3 19.3 0 0 1-6-6 19.6 19.6 0 0 1-3-8.6 2 2 0 0 1 2-2.2h2.6a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9.5 10a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.5 1.8z\"/></svg></span>\n      <div class=\"contact-text\">\n        <div class=\"contact-title\">Vous ne trouvez pas votre probl\u00e8me&nbsp;?</div>\n        <div class=\"contact-sub\">Un technicien peut vous aider directement.</div>\n      </div>\n      <a id=\"contact-phone\" class=\"contact-phone\" href=\"#\"></a>\n    </div>\n  </section>\n\n  <section id=\"view-tree\" hidden>\n    <a href=\"#\" id=\"btn-home\" class=\"btn-link\">&larr; Retour \u00e0 l'accueil</a>\n\n    <div id=\"mode-a\" class=\"mode-a\" hidden>\n      <div class=\"flow-head\">\n        <button type=\"button\" id=\"btn-back-a\" class=\"btn-back\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"19\" height=\"19\"><path d=\"M15 18l-6-6 6-6\"/></svg>\n          Retour\n        </button>\n        <div class=\"progress-track\"><div id=\"progress-bar\" class=\"progress-bar\"></div></div>\n        <div id=\"step-num\" class=\"step-num\"></div>\n      </div>\n      <div class=\"kind-row\" id=\"kind-row-a\">\n        <span id=\"kind-icon-a\" class=\"kind-icon\" aria-hidden=\"true\"></span>\n        <span id=\"kind-label-a\" class=\"kind-label\"></span>\n      </div>\n      <div role=\"region\" aria-live=\"polite\" aria-atomic=\"true\">\n        <div id=\"end-banner-a\" class=\"end-banner\" hidden></div>\n        <h2 id=\"step-title-a\" class=\"step-title-a\" tabindex=\"-1\"></h2>\n        <p id=\"step-text-a\" class=\"step-text-a\"></p>\n        <div id=\"step-media-a\" class=\"step-media\" hidden></div>\n        <blockquote id=\"step-quote-a\" class=\"step-quote\" hidden></blockquote>\n        <div id=\"step-options-a\" class=\"options options-a\"></div>\n        <div id=\"step-end-a\" class=\"end-actions\" hidden></div>\n      </div>\n    </div>\n\n    <div id=\"mode-b\" class=\"mode-b\" hidden>\n      <aside class=\"trail\" id=\"trail\" aria-label=\"Votre parcours\"></aside>\n      <div class=\"mode-b-main\">\n        <div class=\"kind-pill\" id=\"kind-pill-b\">\n          <span id=\"kind-icon-b\" class=\"kind-icon\" aria-hidden=\"true\"></span>\n          <span id=\"kind-label-b\"></span>\n        </div>\n        <div role=\"region\" aria-live=\"polite\" aria-atomic=\"true\">\n          <div id=\"end-banner-b\" class=\"end-banner\" hidden></div>\n          <h2 id=\"step-title-b\" class=\"step-title-b\" tabindex=\"-1\"></h2>\n          <p id=\"step-text-b\" class=\"step-text-b\"></p>\n          <div id=\"step-media-b\" class=\"step-media\" hidden></div>\n          <blockquote id=\"step-quote-b\" class=\"step-quote\" hidden></blockquote>\n          <div id=\"step-options-b\" class=\"options options-b\"></div>\n          <div id=\"step-end-b\" class=\"end-actions\" hidden></div>\n        </div>\n      </div>\n    </div>\n  </section>\n\n  <p id=\"load-error\" class=\"error\" hidden>Impossible de charger le contenu du portail. V\u00e9rifiez que le fichier <code>data.json</code> est bien pr\u00e9sent et que la page est servie via un serveur web (pas en ouverture directe du fichier).</p>\n</main>\n\n<footer class=\"site-footer\">\n  <p>Portail g\u00e9n\u00e9r\u00e9 avec l'\u00e9diteur d'arbres de d\u00e9cision.</p>\n</footer>\n\n<script src=\"script.js\"><\/script>\n</body>\n</html>\n", "style.css": ":root {\n  --accent: #00ACB0;\n  --accent-dark: #00777A;\n  --accent-tint: #DFF3F3;\n  --ink: #002743;\n  --ink2: #14405C;\n  --muted: #5B7789;\n  --muted2: #8CA1B0;\n  --bg: #EEF2F5;\n  --panel: #F7FAFB;\n  --card: #FFFFFF;\n  --border: #D5DEE5;\n  --border2: #E4EAEF;\n  --warn: #B58200;\n  --warn-tint: #FEF3D5;\n  --base-fs: 16px;\n}\n\n* { box-sizing: border-box; }\nhtml { -webkit-text-size-adjust: 100%; }\n[hidden] { display: none !important; }\n\nbody {\n  margin: 0;\n  background: var(--bg);\n  color: var(--ink);\n  font-family: \"Atkinson Hyperlegible\", system-ui, -apple-system, sans-serif;\n  line-height: 1.55;\n  font-size: var(--base-fs);\n}\n\n.skip-link {\n  position: absolute; left: -999px; top: auto;\n  background: var(--ink); color: #fff; padding: 12px 18px; z-index: 100; border-radius: 0 0 10px 0;\n}\n.skip-link:focus { left: 0; top: 0; }\n\n.visually-hidden {\n  position: absolute; width: 1px; height: 1px; overflow: hidden;\n  clip: rect(0 0 0 0); white-space: nowrap;\n}\n\na, button, input { font-family: inherit; }\n\n.site-header {\n  background: var(--card);\n  border-bottom: 1px solid var(--border);\n  padding: 20px 20px;\n}\n.header-inner { max-width: 1240px; margin: 0 auto; }\n.brand-row { display: flex; align-items: center; gap: 13px; }\n.brand-badge {\n  width: 42px; height: 42px; border-radius: 14px; background: var(--accent);\n  flex: 0 0 auto;\n}\n.brand-org { font-size: 13px; color: var(--muted); }\n.brand-title { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }\n\n.container { max-width: 1240px; margin: 0 auto; padding: 40px 24px 70px; }\n\n.tagline { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); line-height: 1.15; letter-spacing: -1px; text-wrap: pretty; }\n.intro { margin: 0 0 28px; font-size: clamp(16px, 2vw, 21px); line-height: 1.6; color: var(--ink2); max-width: 660px; text-wrap: pretty; }\n\n.search-row {\n  display: flex; align-items: center; gap: 12px;\n  background: var(--card); border: 3px solid #C3D0DA; border-radius: 18px;\n  padding: 14px 18px; max-width: 660px; margin-bottom: 30px;\n}\n.search-icon { display: flex; color: var(--muted2); flex: 0 0 auto; }\n#search-input { flex: 1; min-width: 0; border: 0; background: transparent; font-size: 18px; color: var(--ink); }\n#search-input:focus { outline: none; }\n\n.card-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n  gap: 18px;\n  margin-bottom: 30px;\n}\n.tree-card {\n  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;\n  background: var(--card); border: 3px solid var(--border); border-radius: 22px;\n  padding: 26px 24px 24px; cursor: pointer; text-align: left; color: var(--ink);\n  font: inherit;\n}\n.tree-card:hover, .tree-card:focus-visible {\n  border-color: var(--accent); background: #F0FAFA;\n  outline: 3px solid var(--accent); outline-offset: 2px;\n}\n.tree-icon {\n  width: 76px; height: 76px; border-radius: 22px;\n  display: flex; align-items: center; justify-content: center;\n}\n.tree-card-title { font-size: 23px; font-weight: 700; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; text-wrap: pretty; }\n.tree-card-desc { font-size: 16.5px; line-height: 1.5; color: var(--ink2); text-wrap: pretty; }\n\n.no-results { color: var(--muted); }\n\n.contact-banner {\n  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;\n  background: var(--accent-tint); border-radius: 20px; padding: 22px 26px;\n}\n.contact-icon { display: flex; color: var(--warn); flex: 0 0 auto; }\n.contact-text { flex: 1; min-width: 200px; }\n.contact-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; }\n.contact-sub { font-size: 15px; color: var(--ink2); }\n.contact-phone { font-size: 24px; font-weight: 700; color: var(--accent-dark); text-decoration: none; white-space: nowrap; }\n.contact-phone:hover { text-decoration: underline; }\n\n.btn-link {\n  display: inline-block; color: var(--accent-dark); font-size: 15px; font-weight: 700;\n  text-decoration: none; margin-bottom: 18px;\n}\n.btn-link:hover, .btn-link:focus-visible { text-decoration: underline; }\n\n.btn-back {\n  display: flex; align-items: center; gap: 8px;\n  background: var(--card); border: 2px solid var(--border); border-radius: 14px;\n  padding: 12px 16px; cursor: pointer; font-size: 15px; font-weight: 700; color: var(--ink);\n}\n.btn-back:hover { background: #E8EEF2; }\n\n.flow-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }\n.progress-track { flex: 1; height: 10px; border-radius: 99px; background: #DCE4EA; overflow: hidden; }\n.progress-bar { height: 100%; background: var(--accent); border-radius: 99px; transition: width .2s ease; }\n.step-num { font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap; }\n\n.kind-row { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; color: var(--accent); }\n.kind-icon { display: flex; }\n.kind-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }\n\n.step-title-a { margin: 0 0 16px; font-size: clamp(24px, 4vw, 36px); line-height: 1.2; letter-spacing: -0.8px; text-wrap: pretty; }\n.step-text-a { margin: 0 0 22px; font-size: clamp(17px, 2vw, 20px); line-height: 1.6; color: var(--ink2); max-width: 640px; text-wrap: pretty; }\n\n.step-media {\n  border-radius: 18px; overflow: hidden; margin-bottom: 22px; max-width: 640px;\n  background: #DFE7EC; border: 1px solid #CFDAE2;\n}\n.step-media img, .step-media video { display: block; width: 100%; height: auto; }\n.step-media .media-fallback {\n  height: 200px; display: flex; align-items: center; justify-content: center; gap: 10px;\n  color: #7B95A8; font-weight: 700; font-size: 14.5px;\n}\n\n.end-banner {\n  display: flex; align-items: center; gap: 12px; max-width: 640px; margin: 0 0 20px;\n  padding: 14px 18px; border-radius: 16px; font-size: 16px; font-weight: 700;\n}\n.end-banner svg { flex: 0 0 auto; }\n.end-banner.resolved { background: #DEF3EA; color: #14532d; }\n.end-banner.resolved svg { color: #1D9A6C; }\n.end-banner.handoff { background: var(--warn-tint); color: #6b4c00; }\n.end-banner.handoff svg { color: var(--warn); }\n\n.step-quote {\n  display: flex; gap: 12px; margin: 0 0 24px; max-width: 640px;\n  border-left: 6px solid var(--accent); background: var(--accent-tint);\n  border-radius: 0 16px 16px 0; padding: 18px 20px;\n  font-size: 17px; line-height: 1.55; color: var(--ink2); font-style: italic;\n}\n\n.options { display: flex; flex-direction: column; gap: 12px; max-width: 640px; }\n.option-btn {\n  display: flex; align-items: center; justify-content: space-between; gap: 14px;\n  width: 100%; background: var(--card); border: 3px solid #C3D0DA; border-radius: 18px;\n  padding: 20px 22px; cursor: pointer; font-size: 19px; font-weight: 700; color: var(--ink);\n  text-align: left; line-height: 1.3;\n}\n.option-btn:hover, .option-btn:focus-visible { border-color: var(--accent); background: #F0FAFA; outline: none; }\n.option-btn svg { flex: 0 0 auto; color: var(--accent); }\n\n.end-actions { display: flex; gap: 14px; flex-wrap: wrap; max-width: 640px; }\n.btn-primary-lg {\n  background: var(--accent); color: #fff; border: 0; border-radius: 18px;\n  padding: 20px 26px; cursor: pointer; font-size: 19px; font-weight: 700; text-decoration: none; display: inline-block;\n}\n.btn-primary-lg:hover { background: var(--accent-dark); }\n.btn-secondary-lg {\n  background: var(--card); border: 3px solid #C3D0DA; border-radius: 18px;\n  padding: 18px 24px; cursor: pointer; font-size: 19px; font-weight: 700; color: var(--ink);\n  text-decoration: none; display: inline-block;\n}\n.btn-secondary-lg:hover { border-color: var(--accent); }\n\n/* Mode B : pas-\u00e0-pas */\n.mode-b { display: flex; flex-wrap: wrap; gap: 24px; }\n.trail { flex: 0 0 260px; max-width: 100%; }\n.trail-item { display: flex; gap: 12px; }\n.trail-dot {\n  width: 30px; height: 30px; border-radius: 99px; display: flex; align-items: center; justify-content: center;\n  font-size: 14px; font-weight: 700; flex: 0 0 auto;\n}\n.trail-line { width: 2px; flex: 1; background: #C3D0DA; min-height: 20px; }\n.trail-col { display: flex; flex-direction: column; align-items: center; }\n.trail-body { padding-bottom: 18px; }\n.trail-title { font-size: 14.5px; font-weight: 700; line-height: 1.35; }\n.trail-answer { font-size: 13px; color: var(--muted); margin-top: 2px; }\n.mode-b-main { flex: 1; min-width: 280px; }\n.kind-pill {\n  display: inline-flex; align-items: center; gap: 8px; background: var(--accent-tint); color: var(--accent);\n  padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 18px;\n}\n.step-title-b { margin: 0 0 14px; font-size: clamp(22px, 3.4vw, 30px); line-height: 1.25; letter-spacing: -0.6px; text-wrap: pretty; }\n.step-text-b { margin: 0 0 20px; font-size: clamp(16px, 1.8vw, 18px); line-height: 1.6; color: var(--ink2); max-width: 600px; text-wrap: pretty; }\n.options-b { max-width: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }\n\n.error {\n  background: #fdecec; border: 1px solid #e5a3a3; color: #7a1f1f;\n  padding: 16px 18px; border-radius: 12px;\n}\n\n.site-footer { text-align: center; color: var(--muted); font-size: 13px; padding: 22px; }\n\n@media (max-width: 640px) {\n  .flow-head { flex-wrap: wrap; }\n  .options-a .option-btn { padding: 16px 18px; font-size: 17px; }\n}\n", "script.js": "const ICONS = {\n  home:'<path d=\"M4 10.5L12 4l8 6.5V19a1.6 1.6 0 0 1-1.6 1.6H5.6A1.6 1.6 0 0 1 4 19z\"/>',\n  tree:'<circle cx=\"12\" cy=\"4.5\" r=\"2.2\"/><circle cx=\"5.5\" cy=\"19.5\" r=\"2.2\"/><circle cx=\"18.5\" cy=\"19.5\" r=\"2.2\"/><path d=\"M12 6.7v4.3M5.5 17.3V13a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v4.3\"/>',\n  media:'<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.7\"/><path d=\"M4 17l5-4 4 3 3-2 4 3\"/>',\n  eye:'<path d=\"M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z\"/><circle cx=\"12\" cy=\"12\" r=\"2.8\"/>',\n  send:'<path d=\"M21 3L10.5 13.5M21 3l-6.7 18-3.8-7.5L3 9.7z\"/>',\n  gear:'<circle cx=\"12\" cy=\"12\" r=\"3.2\"/><path d=\"M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1\"/>',\n  layers:'<path d=\"M12 3l9 4.5-9 4.5-9-4.5z\"/><path d=\"M3 12.5L12 17l9-4.5\"/><path d=\"M3 17l9 4.5 9-4.5\"/>',\n  grid:'<rect x=\"3\" y=\"3\" width=\"7.5\" height=\"7.5\" rx=\"2\"/><rect x=\"13.5\" y=\"3\" width=\"7.5\" height=\"7.5\" rx=\"2\"/><rect x=\"3\" y=\"13.5\" width=\"7.5\" height=\"7.5\" rx=\"2\"/><rect x=\"13.5\" y=\"13.5\" width=\"7.5\" height=\"7.5\" rx=\"2\"/>',\n  chart:'<path d=\"M4 20V10M10 20V4M16 20v-7M22 20H2\"/>',\n  question:'<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.5 9.3a2.6 2.6 0 1 1 3.4 2.5c-.6.2-.9.8-.9 1.4v.4M12 17h.01\"/>',\n  list:'<path d=\"M4 6h16M4 12h16M4 18h9\"/>',\n  check:'<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.4l2.8 2.8L16 9.6\"/>',\n  phone:'<path d=\"M21.5 16.9v2.6a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.5-3 19.3 19.3 0 0 1-6-6 19.6 19.6 0 0 1-3-8.6 2 2 0 0 1 2-2.2h2.6a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9.5 10a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.5 1.8z\"/>',\n  img:'<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.7\"/><path d=\"M4 17l5-4 4 3 3-2 4 3\"/>',\n  vid:'<rect x=\"2\" y=\"5\" width=\"14\" height=\"14\" rx=\"3\"/><path d=\"M16 10.5L22 7v10l-6-3.5z\"/>',\n  quote:'<path d=\"M9 7H5.5A2.5 2.5 0 0 0 3 9.5v3A2.5 2.5 0 0 0 5.5 15H7v2H4M20 7h-3.5A2.5 2.5 0 0 0 14 9.5v3a2.5 2.5 0 0 0 2.5 2.5H18v2h-3\"/>',\n  file:'<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/>',\n  wifi:'<path d=\"M2.5 9a15 15 0 0 1 19 0M5.5 12.7a10.5 10.5 0 0 1 13 0M8.5 16.4a6 6 0 0 1 7 0\"/><path d=\"M12 20h.01\"/>',\n  power:'<path d=\"M12 3v9\"/><path d=\"M6.3 6.3a8 8 0 1 0 11.4 0\"/>',\n  slow:'<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>',\n  print:'<path d=\"M7 9V3h10v6\"/><rect x=\"3\" y=\"9\" width=\"18\" height=\"8\" rx=\"2\"/><path d=\"M7 14h10v7H7z\"/>',\n  screen:'<rect x=\"2.5\" y=\"4\" width=\"19\" height=\"13\" rx=\"2.5\"/><path d=\"M8.5 21h7\"/>',\n  lock:'<rect x=\"4\" y=\"10\" width=\"16\" height=\"11\" rx=\"2.5\"/><path d=\"M8 10V7a4 4 0 0 1 8 0v3\"/>',\n  sound:'<path d=\"M4 9.5h3.5L12 5.5v13L7.5 14.5H4z\"/><path d=\"M16 9.5a4 4 0 0 1 0 5M18.8 7a8 8 0 0 1 0 10\"/>',\n  virus:'<path d=\"M12 3l8 3.5v5c0 5-3.4 8.7-8 9.5-4.6-.8-8-4.5-8-9.5v-5z\"/><path d=\"M12 9v3.5M12 16h.01\"/>',\n  update:'<path d=\"M3 12a9 9 0 0 1 15.3-6.4L21 8\"/><path d=\"M21 4v4h-4\"/><path d=\"M21 12a9 9 0 0 1-15.3 6.4L3 16\"/><path d=\"M3 20v-4h4\"/>',\n  search:'<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M16.5 16.5L21 21\"/>',\n  plus:'<path d=\"M12 5v14M5 12h14\"/>',\n  back:'<path d=\"M15 18l-6-6 6-6\"/>',\n  arrow:'<path d=\"M5 12h14M13 5l7 7-7 7\"/>',\n  trash:'<path d=\"M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13\"/>',\n  upload:'<path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3\"/>',\n  download:'<path d=\"M12 3v12M8 11l4 4 4-4\"/><path d=\"M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2\"/>'\n};\n(function () {\n  \"use strict\";\n\n  function svg(key, size) {\n    size = size || 24;\n    return '<svg viewBox=\"0 0 24 24\" width=\"' + size + '\" height=\"' + size + '\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">' + (ICONS[key] || \"\") + \"</svg>\";\n  }\n\n  // Plus de \"types\" : une \u00e9tape sans r\u00e9ponse est simplement une fin.\n\n  var els = {};\n  [\"view-home\", \"view-tree\", \"portal-title\", \"org-name\", \"brand-badge\", \"portal-tagline\", \"portal-intro\",\n   \"search-input\", \"tree-grid\", \"no-results\", \"contact-banner\", \"contact-phone\",\n   \"btn-home\", \"mode-a\", \"mode-b\", \"btn-back-a\", \"progress-bar\", \"step-num\",\n   \"kind-icon-a\", \"kind-label-a\", \"kind-row-a\", \"end-banner-a\", \"step-title-a\", \"step-text-a\", \"step-media-a\", \"step-quote-a\", \"step-options-a\", \"step-end-a\",\n   \"trail\", \"kind-icon-b\", \"kind-label-b\", \"kind-pill-b\", \"end-banner-b\", \"step-title-b\", \"step-text-b\", \"step-media-b\", \"step-quote-b\", \"step-options-b\", \"step-end-b\",\n   \"load-error\"\n  ].forEach(function (id) { els[id.replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); })] = document.getElementById(id); });\n\n  var data = null;\n  var currentTree = null;\n  var currentNodeId = null;\n  var history = [];\n  var mode = \"A\";\n  var startTreeId = null;\n\n  if (window.ADI_PREVIEW) {\n    startTreeId = window.ADI_PREVIEW.startTreeId || null;\n    mode = window.ADI_PREVIEW.mode || \"A\";\n  }\n\n  function optionText(tree, opt) {\n    if (opt.label && opt.label.trim()) return opt.label;\n    var target = tree.nodes[opt.target];\n    return (target && target.title) || \"Continuer\";\n  }\n\n  function renderMedia(container, media) {\n    container.innerHTML = \"\";\n    if (!media) { container.hidden = true; return; }\n    container.hidden = false;\n    if (media.type === \"image\" && media.url) {\n      var img = document.createElement(\"img\");\n      img.src = media.url;\n      img.alt = media.name || \"\";\n      container.appendChild(img);\n    } else if (media.type === \"video\" && media.url) {\n      if (/youtube\\.com|youtu\\.be|vimeo\\.com/.test(media.url)) {\n        var iframe = document.createElement(\"iframe\");\n        iframe.src = media.url;\n        iframe.style.width = \"100%\";\n        iframe.style.aspectRatio = \"16/9\";\n        iframe.style.border = \"0\";\n        iframe.title = media.name || \"Vid\u00e9o\";\n        iframe.allowFullscreen = true;\n        container.appendChild(iframe);\n      } else {\n        var video = document.createElement(\"video\");\n        video.src = media.url;\n        video.controls = true;\n        container.appendChild(video);\n      }\n    } else {\n      var fb = document.createElement(\"div\");\n      fb.className = \"media-fallback\";\n      fb.innerHTML = svg(\"img\", 28) + \"<span>\" + (media.name || \"M\u00e9dia\") + \"</span>\";\n      container.appendChild(fb);\n    }\n  }\n\n  // ---------- Home ----------\n  function renderHome() {\n    document.title = data.portalName || \"Portail d'aide\";\n    els.orgName.textContent = data.org && data.org.name ? data.org.name : \"\";\n    els.portalTitle.textContent = data.portalName || \"\";\n    els.brandBadge.style.background = data.accent || \"#00ACB0\";\n    els.portalTagline.textContent = data.portalTagline || \"\";\n    els.portalIntro.textContent = data.portalIntro || \"\";\n\n    if (data.org && data.org.phone) {\n      els.contactBanner.hidden = false;\n      els.contactPhone.textContent = data.org.phone;\n      els.contactPhone.href = \"tel:\" + data.org.phone.replace(/[^0-9+]/g, \"\");\n    }\n\n    function draw(filter) {\n      els.treeGrid.innerHTML = \"\";\n      var q = (filter || \"\").trim().toLowerCase();\n      var any = false;\n      (data.trees || []).forEach(function (tree) {\n        if (q && tree.title.toLowerCase().indexOf(q) === -1 && (tree.description || \"\").toLowerCase().indexOf(q) === -1) return;\n        any = true;\n        var card = document.createElement(\"button\");\n        card.type = \"button\";\n        card.className = \"tree-card\";\n        card.setAttribute(\"role\", \"listitem\");\n        var iconWrap = document.createElement(\"div\");\n        iconWrap.className = \"tree-icon\";\n        iconWrap.style.background = tree.tint || \"#DFF3F3\";\n        iconWrap.style.color = tree.color || \"#00ACB0\";\n        iconWrap.innerHTML = svg(tree.icon || \"grid\", 30);\n        card.appendChild(iconWrap);\n        var textWrap = document.createElement(\"div\");\n        textWrap.innerHTML = '<div class=\"tree-card-title\"></div><div class=\"tree-card-desc\"></div>';\n        textWrap.querySelector(\".tree-card-title\").textContent = tree.title;\n        textWrap.querySelector(\".tree-card-desc\").textContent = tree.description || \"\";\n        card.appendChild(textWrap);\n        card.addEventListener(\"click\", function () { openTree(tree); });\n        els.treeGrid.appendChild(card);\n      });\n      els.noResults.hidden = any || !q;\n    }\n    draw(\"\");\n    els.searchInput.addEventListener(\"input\", function () { draw(els.searchInput.value); });\n  }\n\n  function showHome() {\n    els.viewTree.hidden = true;\n    els.viewHome.hidden = false;\n  }\n\n  // ---------- Tree flow ----------\n  function openTree(tree) {\n    currentTree = tree;\n    currentNodeId = tree.startId;\n    history = [];\n    els.viewHome.hidden = true;\n    els.viewTree.hidden = false;\n    els.modeA.hidden = mode !== \"A\";\n    els.modeB.hidden = mode !== \"B\";\n    render();\n  }\n\n  els.btnHome.addEventListener(\"click\", function (e) { e.preventDefault(); showHome(); });\n  els.btnBackA.addEventListener(\"click\", function () {\n    if (history.length) { currentNodeId = history.pop(); render(); }\n  });\n\n  function goToOption(target) {\n    history.push(currentNodeId);\n    currentNodeId = target;\n    render();\n  }\n\n  function restart() {\n    history = [];\n    currentNodeId = currentTree.startId;\n    render();\n  }\n\n  function renderEndActions(container) {\n    container.innerHTML = \"\";\n    container.hidden = false;\n    var node = currentTree.nodes[currentNodeId];\n    var restartBtn = document.createElement(\"button\");\n    restartBtn.type = \"button\";\n    restartBtn.className = \"btn-primary-lg\";\n    restartBtn.textContent = \"Revenir au d\u00e9but\";\n    restartBtn.addEventListener(\"click\", restart);\n    container.appendChild(restartBtn);\n    if (node.showCallButton && data.org && data.org.phone) {\n      var callBtn = document.createElement(\"a\");\n      callBtn.className = \"btn-secondary-lg\";\n      callBtn.href = \"tel:\" + data.org.phone.replace(/[^0-9+]/g, \"\");\n      callBtn.textContent = \"Appeler \" + data.org.phone;\n      container.appendChild(callBtn);\n    }\n  }\n\n  function renderEndBanner(el, node, isEnd) {\n    if (!isEnd) { el.hidden = true; return; }\n    el.hidden = false;\n    if (node.showCallButton) {\n      el.className = \"end-banner handoff\";\n      el.innerHTML = svg(\"phone\", 22) + \"<span>Un technicien va prendre le relais.</span>\";\n    } else {\n      el.className = \"end-banner resolved\";\n      el.innerHTML = svg(\"check\", 22) + \"<span>Probl\u00e8me r\u00e9solu !</span>\";\n    }\n  }\n\n  function render() {\n    var node = currentTree.nodes[currentNodeId];\n    if (!node) return;\n    var isEnd = !node.options || node.options.length === 0;\n\n    if (mode === \"A\") {\n      var stepNum = history.length + 1;\n      els.progressBar.style.width = Math.min(100, Math.round((stepNum / 5) * 100)) + \"%\";\n      els.stepNum.textContent = \"\u00c9tape \" + stepNum;\n      els.btnBackA.style.visibility = history.length ? \"visible\" : \"hidden\";\n      els.kindRowA.hidden = true;\n      renderEndBanner(els.endBannerA, node, isEnd);\n      els.stepTitleA.textContent = node.title;\n      els.stepTextA.textContent = node.text;\n      renderMedia(els.stepMediaA, node.media);\n      if (node.quote && node.quote.trim()) { els.stepQuoteA.hidden = false; els.stepQuoteA.textContent = node.quote; }\n      else { els.stepQuoteA.hidden = true; }\n      els.stepOptionsA.innerHTML = \"\";\n      (node.options || []).forEach(function (opt) {\n        var btn = document.createElement(\"button\");\n        btn.type = \"button\";\n        btn.className = \"option-btn\";\n        btn.innerHTML = \"<span></span>\" + svg(\"arrow\", 24);\n        btn.querySelector(\"span\").textContent = optionText(currentTree, opt);\n        btn.addEventListener(\"click\", function () { goToOption(opt.target); });\n        els.stepOptionsA.appendChild(btn);\n      });\n      if (isEnd) renderEndActions(els.stepEndA); else { els.stepEndA.hidden = true; els.stepEndA.innerHTML = \"\"; }\n      els.stepTitleA.focus();\n    } else {\n      var trailIds = history.concat([currentNodeId]);\n      els.trail.innerHTML = \"\";\n      trailIds.forEach(function (id, i) {\n        var n = currentTree.nodes[id];\n        var last = i === trailIds.length - 1;\n        var nextId = trailIds[i + 1];\n        var answer = nextId ? optionText(currentTree, (n.options || []).find(function (o) { return o.target === nextId; }) || { target: nextId }) : \"En cours\";\n        var row = document.createElement(\"div\");\n        row.className = \"trail-item\";\n        row.innerHTML =\n          '<div class=\"trail-col\"><div class=\"trail-dot\"></div><div class=\"trail-line\"></div></div>' +\n          '<div class=\"trail-body\"><div class=\"trail-title\"></div><div class=\"trail-answer\"></div></div>';\n        row.querySelector(\".trail-dot\").textContent = i + 1;\n        row.querySelector(\".trail-dot\").style.background = last ? \"#00ACB0\" : \"#C3D0DA\";\n        row.querySelector(\".trail-dot\").style.color = last ? \"#fff\" : \"#5B7789\";\n        row.querySelector(\".trail-title\").textContent = n.title;\n        row.querySelector(\".trail-title\").style.color = last ? \"#002743\" : \"#5B7789\";\n        row.querySelector(\".trail-answer\").textContent = answer || \"\";\n        els.trail.appendChild(row);\n      });\n      els.kindPillB.hidden = true;\n      renderEndBanner(els.endBannerB, node, isEnd);\n      els.stepTitleB.textContent = node.title;\n      els.stepTextB.textContent = node.text;\n      renderMedia(els.stepMediaB, node.media);\n      if (node.quote && node.quote.trim()) { els.stepQuoteB.hidden = false; els.stepQuoteB.textContent = node.quote; }\n      else { els.stepQuoteB.hidden = true; }\n      els.stepOptionsB.innerHTML = \"\";\n      (node.options || []).forEach(function (opt) {\n        var btn = document.createElement(\"button\");\n        btn.type = \"button\";\n        btn.className = \"option-btn\";\n        btn.innerHTML = \"<span></span>\" + svg(\"arrow\", 22);\n        btn.querySelector(\"span\").textContent = optionText(currentTree, opt);\n        btn.addEventListener(\"click\", function () { goToOption(opt.target); });\n        els.stepOptionsB.appendChild(btn);\n      });\n      if (isEnd) renderEndActions(els.stepEndB); else { els.stepEndB.hidden = true; els.stepEndB.innerHTML = \"\"; }\n      els.stepTitleB.focus();\n    }\n  }\n\n  function boot(json) {\n      data = json;\n      if (data.accent) document.documentElement.style.setProperty(\"--accent\", data.accent);\n      if (data.bg) document.documentElement.style.setProperty(\"--bg\", data.bg);\n      if (data.textSize === \"grand\") document.documentElement.style.setProperty(\"--base-fs\", \"18px\");\n      if (data.textSize === \"tres-grand\") document.documentElement.style.setProperty(\"--base-fs\", \"21px\");\n      if (data.trackingSnippet) {\n        var wrap = document.createElement(\"div\");\n        wrap.innerHTML = data.trackingSnippet;\n        Array.prototype.forEach.call(wrap.childNodes, function (n) { document.head.appendChild(n); });\n      }\n      renderHome();\n      if (startTreeId) {\n        var t = (data.trees || []).find(function (x) { return x.id === startTreeId; });\n        if (t) { openTree(t); return; }\n      }\n      if (!window.ADI_PREVIEW) mode = data.mode || \"A\";\n      showHome();\n  }\n\n  if (window.ADI_DATA) {\n    boot(window.ADI_DATA);\n  } else {\n    fetch(\"data.json\")\n      .then(function (r) { if (!r.ok) throw new Error(\"HTTP \" + r.status); return r.json(); })\n      .then(boot)\n      .catch(function () { els.loadError.hidden = false; });\n  }\n})();\n"}</script>
+<script src="icons.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="vendor/jszip.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
