@@ -95,12 +95,12 @@
     }
     function mkTree(title, description, icon, color, tint, startId, order, nodes) {
       var id = uid();
-      store.trees[id] = { id: id, title: title, description: description, status: "brouillon", icon: icon, color: color, tint: tint, startId: startId, order: order, nodePos: {}, nodes: nodes };
+      store.trees[id] = { id: id, title: title, description: description, status: "brouillon", icon: icon, color: color, tint: tint, startId: startId, order: order, nodePos: {}, nodes: nodes, isDemo: true };
       return id;
     }
     function mkPortal(name, tagline, intro, slug, icon, color, tint, treeIds) {
       var id = uid();
-      store.portals[id] = { id: id, name: name, tagline: tagline, intro: intro, slug: slug, icon: icon, color: color, tint: tint, mode: "A", treeIds: treeIds, lastExportAt: null };
+      store.portals[id] = { id: id, name: name, tagline: tagline, intro: intro, slug: slug, icon: icon, color: color, tint: tint, mode: "A", treeIds: treeIds, lastExportAt: null, isDemo: true };
       return id;
     }
 
@@ -323,8 +323,12 @@
     render();
   }
 
+  function hasDemoData() {
+    return Object.values(store.trees).some(function (t) { return t.isDemo; }) || Object.values(store.portals).some(function (p) { return p.isDemo; });
+  }
   function render() {
     renderSidebarFooter();
+    document.getElementById("nav-group-demo").hidden = !hasDemoData();
     var s = appState.screen;
     if (s === "dash") renderDash();
     else if (s === "editor") renderEditor();
@@ -335,6 +339,7 @@
     else if (s === "publish") renderPublish();
     else if (s === "settings") renderSettings();
     else if (s === "stats") renderStats();
+    else if (s === "demo") renderDemoScreen();
   }
 
   function renderSidebarFooter() {
@@ -1276,6 +1281,29 @@
       '<div class="panel-sub">Un site exporté est statique : il n\u2019y a pas de serveur pour compter les visites. Pour un suivi respectueux de la vie privée, collez le code d\u2019un outil comme Plausible, Umami ou GoatCounter dans <strong>Paramètres → Suivi de fréquentation</strong> : il sera inclus dans les prochains exports.</div>';
   }
 
+  // ---------- Données de démo ----------
+  function renderDemoScreen() {
+    var demoTrees = Object.values(store.trees).filter(function (t) { return t.isDemo; });
+    var demoPortals = Object.values(store.portals).filter(function (p) { return p.isDemo; });
+    var grid = document.getElementById("demo-list");
+    var cards = demoPortals.map(function (p) {
+      return '<div class="entity-card" style="cursor:default;"><div class="entity-card-top"><div class="entity-icon" style="background:' + p.tint + ';color:' + p.color + ';">' + svgIcon(p.icon, 22) + '</div><span class="badge" style="background:var(--tint);color:var(--muted);">Portail</span></div><div><div class="entity-title">' + escapeHtml(p.name) + '</div><div class="entity-desc">' + p.treeIds.length + " arbre" + (p.treeIds.length > 1 ? "s" : "") + "</div></div></div>";
+    }).concat(demoTrees.map(function (t) {
+      return '<div class="entity-card" style="cursor:default;"><div class="entity-card-top"><div class="entity-icon" style="background:' + t.tint + ';color:' + t.color + ';">' + svgIcon(t.icon, 22) + '</div><span class="badge" style="background:var(--tint);color:var(--muted);">Arbre</span></div><div><div class="entity-title">' + escapeHtml(t.title) + '</div><div class="entity-desc">' + t.order.length + " étapes</div></div></div>";
+    }));
+    grid.innerHTML = cards.join("") || '<p class="empty-hint">Aucune donnée de démo restante.</p>';
+  }
+  document.getElementById("btn-delete-demo").addEventListener("click", function () {
+    if (!confirm("Supprimer définitivement tous les arbres et portails de démonstration ?")) return;
+    Object.keys(store.trees).forEach(function (id) { if (store.trees[id].isDemo) delete store.trees[id]; });
+    Object.keys(store.portals).forEach(function (id) { if (store.portals[id].isDemo) delete store.portals[id]; });
+    if (store.trees[appState.activeTreeId] === undefined) appState.activeTreeId = null;
+    if (store.portals[appState.activePortalId] === undefined) appState.activePortalId = null;
+    saveStore();
+    toast("Données de démonstration supprimées.");
+    setScreen("dash");
+  });
+
   // ---------- Tutoriel de bienvenue ----------
   var TUTORIAL_SLIDES = [
     {
@@ -1349,26 +1377,12 @@
     renderTutorial();
     document.getElementById("tutorial-overlay").hidden = false;
   }
-  var demoWasAutoSeeded = false;
   function closeTutorial() {
     document.getElementById("tutorial-overlay").hidden = true;
     highlightNav(null);
     highlightElement(null);
     store.settings.tutorialSeen = true;
     saveStore();
-    if (demoWasAutoSeeded) {
-      demoWasAutoSeeded = false;
-      if (!confirm("Garder les arbres et portails d\u2019exemple pour vous en inspirer\u202f? (Annuler pour tout supprimer et repartir d\u2019une page vierge)")) {
-        store.trees = {};
-        store.portals = {};
-        appState.activeTreeId = null;
-        appState.activePortalId = null;
-        appState.portalHomeId = null;
-        appState.apercuTreeId = null;
-        appState.publishPortalId = null;
-        saveStore();
-      }
-    }
     setScreen("dash");
   }
   document.getElementById("btn-tutorial-prev").addEventListener("click", function () { if (tutorialIndex > 0) { tutorialIndex--; renderTutorial(); } });
@@ -1401,7 +1415,6 @@
       appState.portalHomeId = demo0.portalId;
       appState.apercuTreeId = demo0.treeId;
       appState.publishPortalId = demo0.portalId;
-      demoWasAutoSeeded = true;
     }
     showTutorial();
   }

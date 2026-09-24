@@ -37,6 +37,11 @@
       <button type="button" class="nav-btn" data-screen="stats">Statistiques</button>
     </div>
 
+    <div class="nav-group" id="nav-group-demo" hidden>
+      <div class="nav-label">Démonstration</div>
+      <button type="button" class="nav-btn nav-btn-demo" data-screen="demo">Données de démo</button>
+    </div>
+
     <button type="button" class="tutorial-relaunch" id="btn-tutorial-relaunch">Revoir le tutoriel</button>
     <div class="sidebar-footer" id="sidebar-footer"></div>
   </nav>
@@ -240,6 +245,18 @@
       <p class="sub">Ce back-office ne collecte rien lui-même : les chiffres ci-dessous décrivent votre contenu, pas la fréquentation réelle.</p>
       <div class="stat-row" id="stats-content"></div>
       <div class="panel-card" id="stats-tracking-info"></div>
+    </section>
+
+    <!-- ═══ DONNÉES DE DÉMO ═══ -->
+    <section id="screen-demo" class="screen">
+      <h1>Données de démonstration</h1>
+      <p class="sub">Ces arbres et portails ont été créés automatiquement pour illustrer l'outil. Cet onglet disparaît une fois qu'ils sont supprimés.</p>
+      <div class="card-grid" id="demo-list"></div>
+      <div class="panel-card">
+        <div class="panel-title">Supprimer les données de démonstration</div>
+        <div class="panel-sub">Retire uniquement les arbres et portails listés ci-dessus. Vos autres créations ne sont pas concernées.</div>
+        <button type="button" class="btn btn-danger-line" id="btn-delete-demo">Supprimer les données de démonstration</button>
+      </div>
     </section>
 
   </main>
